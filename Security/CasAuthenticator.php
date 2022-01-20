@@ -2,6 +2,7 @@
 
 namespace YRaiso\CasAuthBundle\Security;
 
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +16,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-
+use YRaiso\CasAuthBundle\EventListener\CASAuthenticationFailureEvent;
 class CasAuthenticator extends AbstractAuthenticator
 {
     protected $server_login_url;
@@ -26,13 +27,15 @@ class CasAuthenticator extends AbstractAuthenticator
     protected $query_service_parameter;
     protected $options;
 
+    private $eventDispatcher;
+
     private $client;
 
     /**
      * @param $config
      * @param HttpClientInterface $client
      */
-    public function __construct($config, HttpClientInterface $client)
+    public function __construct($config, HttpClientInterface $client, EventDispatcherInterface $eventDispatcher)
     {
         $this->server_login_url = $config['server_login_url'];
         $this->server_validation_url = $config['server_validation_url'];
@@ -41,6 +44,8 @@ class CasAuthenticator extends AbstractAuthenticator
         $this->query_service_parameter = $config['query_service_parameter'];
         $this->query_ticket_parameter = $config['query_ticket_parameter'];
         $this->options = $config['options'];
+
+        $this->eventDispatcher = $eventDispatcher;
 
         $this->client = $client;
     }
@@ -109,7 +114,7 @@ class CasAuthenticator extends AbstractAuthenticator
 
         $def_response = new JsonResponse($data, 403);
         $event = new CASAuthenticationFailureEvent($request,$exception, $def_response);
-        $this->eventDispatcher->dispatch(CASAuthenticationFailureEvent::POST_MESSAGE, $event);
+        $this->eventDispatcher->dispatch($event, CASAuthenticationFailureEvent::POST_MESSAGE);
 
         return $event->getResponse();
     }

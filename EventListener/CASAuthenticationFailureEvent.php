@@ -5,8 +5,7 @@ namespace YRaiso\CasAuthBundle\EventListener;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\EventDispatcher\Event;
-
+use Symfony\Contracts\EventDispatcher\Event;
 
 class CASAuthenticationFailureEvent extends Event {
 
