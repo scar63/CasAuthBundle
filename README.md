@@ -95,8 +95,8 @@ services:
             $logoutUrl: "%cas_server_logout_url%"
         tags:
             - name: 'kernel.event_listener'
-            event: 'Symfony\Component\Security\Http\Event\LogoutEvent'
-            dispatcher: security.event_dispatcher.main
+              event: 'Symfony\Component\Security\Http\Event\LogoutEvent'
+              dispatcher: security.event_dispatcher.main
   ```
 Next, you need to create a route for this URL (but not a controller):
 ```php
