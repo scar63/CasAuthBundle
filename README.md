@@ -12,6 +12,17 @@ running the following command:
 composer require yraiso/casauth-bundle
 ```
 
+Next, enable the bundle in your `config/bundles.php` file:
+
+```php
+<?php
+
+return [
+//.....
+        YRaiso\CasAuthBundle\YRaisoCasAuthBundle::class => ['all' => true],
+];
+```
+
 Create this file config/packages/y_raiso_cas_auth.yaml, add these settings :
 ```yaml
 y_raiso_cas_auth:
