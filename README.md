@@ -19,7 +19,7 @@ y_raiso_cas_auth:
     server_validation_url: https://mycasserver/cas/serviceValidate
     server_logout_url: https://mycasserver/cas/logout
     xml_namespace: cas
-    options:[] # you can add request options (or override global ones) (cf https://symfony.com/doc/current/http_client.html#making-requests)
+    options: [] # you can add request options (or override global ones) (cf https://symfony.com/doc/current/http_client.html#making-requests)
 ```
 Note : the xml_namespace and options parameters are optionals
 
