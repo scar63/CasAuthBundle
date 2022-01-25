@@ -9,7 +9,7 @@ Install the library via [Composer](https://getcomposer.org/) by
 running the following command:
 
 ```bash
-composer require yraiso/casauth-bundle dev-master
+composer require yraiso/casauth-bundle
 ```
 
 Create this file config/packages/y_raiso_cas_auth.yaml, add these settings :
