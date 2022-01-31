@@ -37,6 +37,7 @@ Note : the xml_namespace and options parameters are optionals
 Modify your security.yml with the following values (the provider in the following settings should not be used as it's just a very basic example ) :
 ```yaml
 security:
+    enable_authenticator_manager: true  
     providers:
         cas_user_provider:
           id: yraiso.cas_user_provider
@@ -72,7 +73,7 @@ services:
 
 If you want your users to logout from the remote CAS server when logging out from your app, you should apply the following settings :
 
-services.yaml:
+security.yaml:
 
 ```yaml
 # ...
