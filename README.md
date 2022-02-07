@@ -56,7 +56,8 @@ security:
     access_control:
         - { path: ^/, roles: ROLE_USER }
   ```
-In production, create your own UserProvider ( implements UserProviderInterface, PasswordUpgraderInterface) and User (implements UserInterface) then add its service name in providers:cas:id :
+In production, create your own UserProvider ( implements UserProviderInterface, PasswordUpgraderInterface) and User (implements UserInterface, this class it is not mandatory) 
+then add its service name in providers:cas_user_provider:id: (security.yml file) :
 
 services.yaml:
 
