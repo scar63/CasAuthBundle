@@ -1,8 +1,8 @@
 {
   "name": "yraiso/casauth-bundle",
   "type": "symfony-bundle",
-  "description": "Basic CAS (SSO) authenticator for Symfony 5.4",
-  "keywords": ["YRaiso", "CAS", "SSO", "Symfony 5.4", "Authenticator"],
+  "description": "Basic CAS (SSO) authenticator for Symfony 5.4 and 6.0",
+  "keywords": ["YRaiso", "CAS", "SSO", "Symfony 5.4", "Symfony 6.0", "Authenticator"],
   "license": "MIT",
   "authors": [
     {
