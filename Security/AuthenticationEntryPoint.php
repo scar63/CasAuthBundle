@@ -26,7 +26,7 @@ class AuthenticationEntryPoint implements AuthenticationEntryPointInterface
      * @param AuthenticationException|null $authException
      * @return RedirectResponse
      */
-    public function start(Request $request, AuthenticationException $authException = null)
+    public function start(Request $request, AuthenticationException $authException = null): RedirectResponse
     {
         return new RedirectResponse($this->server_login_url.'?'.$this->query_service_parameter.'='.urlencode($request->getUri()));
     }

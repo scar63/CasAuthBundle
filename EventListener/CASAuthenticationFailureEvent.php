@@ -24,28 +24,32 @@ class CASAuthenticationFailureEvent extends Event {
     /**
      * @return Response
      */
-    public function getResponse() {
+    public function getResponse(): Response
+    {
         return $this->response;
     }
 
     /**
      * @return Request
      */
-    public function getRequest() {
+    public function getRequest(): Request
+    {
         return $this->request;
     }
 
     /**
      * @return AuthenticationException
      */
-    public function getException() {
+    public function getException(): AuthenticationException
+    {
         return $this->exception;
     }
 
     /**
      * @return string
      */
-    public function getExceptionType() {
+    public function getExceptionType(): string
+    {
         return get_class($this->exception);
     }
 

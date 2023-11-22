@@ -69,6 +69,29 @@ services:
  ```
   And voila ! Your secured route should redirect you to your CAS login page which should authenticate you.
 
+Note : if your CAS server is configured to resend attributes, you must declare an extra field in your User class as follows :
+```php
+// ....
+
+    private $casAttributes = [];
+    /**
+     * @return array
+     */
+    public function getCasAttributes(): array
+    {
+        return $this->casAttributes;
+    }
+
+    /**
+     * @param array $casAttributes
+     * @return void
+     */
+    public function setCasAttributes(array $casAttributes): void
+    {
+        $this->casAttributes = $casAttributes;
+    }
+
+  ```
 
 ## CAS global logout option
 

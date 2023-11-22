@@ -2,7 +2,6 @@
 
 namespace YRaiso\CasAuthBundle\DependencyInjection;
 
-use YRaiso\CasAuthBundle\DependencyInjection\Configuration;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;

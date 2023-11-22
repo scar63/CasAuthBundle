@@ -27,8 +27,9 @@ class CasUserProvider implements UserProviderInterface, PasswordUpgraderInterfac
             $user->setUid($identifier);
             return $user;
         }
-        else
+        else {
             throw new UserNotFoundException();
+        }
     }
 
     /**

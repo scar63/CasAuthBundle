@@ -2,6 +2,8 @@
 
 namespace YRaiso\CasAuthBundle\Security;
 
+use Exception;
+use SimpleXMLElement;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,6 +17,10 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use YRaiso\CasAuthBundle\EventListener\CASAuthenticationFailureEvent;
 class CasAuthenticator extends AbstractAuthenticator
@@ -34,6 +40,7 @@ class CasAuthenticator extends AbstractAuthenticator
     /**
      * @param $config
      * @param HttpClientInterface $client
+     * @param EventDispatcherInterface $eventDispatcher
      */
     public function __construct($config, HttpClientInterface $client, EventDispatcherInterface $eventDispatcher)
     {
@@ -65,10 +72,11 @@ class CasAuthenticator extends AbstractAuthenticator
     /**
      * @param Request $request
      * @return Passport
-     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws Exception
      */
     public function authenticate(Request $request): Passport
     {
@@ -77,14 +85,19 @@ class CasAuthenticator extends AbstractAuthenticator
             $this->query_service_parameter.'='.urlencode($this->removeCasTicket($request->getUri()));
 
        $response = $this->client->request('GET', $url, $this->options);
-        $xml = new \SimpleXMLElement($response->getContent(), 0, false, $this->xml_namespace, true);
+        $xml = new SimpleXMLElement($response->getContent(), 0, false, $this->xml_namespace, true);
 
-        if (isset($xml->authenticationSuccess)) {
-            $username = (array)$xml->authenticationSuccess[0];
-            return new SelfValidatingPassport(new UserBadge($username['user']));
+        if (property_exists($xml, 'authenticationSuccess') && $xml->authenticationSuccess !== null) {
+            $infoUser = (array)$xml->authenticationSuccess[0];
+            $passport = new SelfValidatingPassport(new UserBadge($infoUser['user']));
+            if(!empty($infoUser['attributes']))
+                foreach ((array)$infoUser['attributes'] as $attributeName => $attributeValue)
+                    $passport->setAttribute($attributeName, $attributeValue);
+            return $passport;
         }
-        else
+        else {
             throw new CustomUserMessageAuthenticationException('Authentication failed! Try again');
+        }
     }
 
     /**
@@ -95,10 +108,12 @@ class CasAuthenticator extends AbstractAuthenticator
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        if ($request->query->has($this->query_ticket_parameter))
+        if ($request->query->has($this->query_ticket_parameter)) {
             return new RedirectResponse($this->removeCasTicket($request->getUri()));
-        else
+        }
+        else {
             return null; // on success, let the request continue
+        }
     }
 
     /**
@@ -124,7 +139,8 @@ class CasAuthenticator extends AbstractAuthenticator
      * @param $uri
      * @return string
      */
-    protected function removeCasTicket($uri) {
+    protected function removeCasTicket($uri): string
+    {
         $parsed_url = parse_url($uri);
         // If there are no query parameters, then there is nothing to do.
         if (empty($parsed_url['query'])) {
@@ -146,14 +162,26 @@ class CasAuthenticator extends AbstractAuthenticator
         // Rebuild the URI from the parsed components.
         // Source: https://secure.php.net/manual/en/function.parse-url.php#106731
         $scheme   = isset($parsed_url['scheme']) ? $parsed_url['scheme'] . '://' : '';
-        $host     = isset($parsed_url['host']) ? $parsed_url['host'] : '';
+        $host     = $parsed_url['host'] ?? '';
         $port     = isset($parsed_url['port']) ? ':' . $parsed_url['port'] : '';
-        $user     = isset($parsed_url['user']) ? $parsed_url['user'] : '';
+        $user     = $parsed_url['user'] ?? '';
         $pass     = isset($parsed_url['pass']) ? ':' . $parsed_url['pass']  : '';
         $pass     = ($user || $pass) ? "$pass@" : '';
-        $path     = isset($parsed_url['path']) ? $parsed_url['path'] : '';
+        $path     = $parsed_url['path'] ?? '';
         $query    = isset($parsed_url['query']) ? '?' . $parsed_url['query'] : '';
         $fragment = isset($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : '';
         return "$scheme$user$pass$host$port$path$query$fragment";
     }
+
+    /**
+     * @param Passport $passport
+     * @param string $firewallName
+     * @return TokenInterface
+     */
+    public function createToken(Passport $passport, string $firewallName): TokenInterface
+    {
+        $passport->getUser()->setCasAttributes($passport->getAttributes());
+        return new PostAuthenticationToken($passport->getUser(), $firewallName, $passport->getUser()->getRoles());
+    }
+
 }
