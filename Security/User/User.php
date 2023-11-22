@@ -11,6 +11,8 @@ class User implements UserInterface
 
     private $roles = [];
 
+    private $casAttributes = [];
+
     public function getUid(): ?string
     {
         return $this->uid;
@@ -87,5 +89,22 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCasAttributes(): array
+    {
+        return $this->casAttributes;
+    }
+
+    /**
+     * @param array $casAttributes
+     * @return void
+     */
+    public function setCasAttributes(array $casAttributes): void
+    {
+        $this->casAttributes = $casAttributes;
     }
 }
