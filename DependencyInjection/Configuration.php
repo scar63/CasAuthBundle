@@ -20,6 +20,8 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('server_login_url')->end()
             ->scalarNode('server_validation_url')->end()
             ->scalarNode('server_logout_url')->end()
+            ->scalarNode('server_force_redirect_https')
+            ->defaultValue('false')->end()
             ->scalarNode('xml_namespace')
             ->defaultValue('cas')
             ->end()
