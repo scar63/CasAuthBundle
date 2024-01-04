@@ -29,7 +29,7 @@ y_raiso_cas_auth:
     server_login_url: https://mycasserver/cas/
     server_validation_url: https://mycasserver/cas/serviceValidate
     server_logout_url: https://mycasserver/cas/logout
-    server_force_redirect_https: false # only for app with vhost set to 80 and behind reverse proxy (443)         
+    server_force_redirect_https: false # only for app with vhost set to 80 and behind reverse proxy (443) - if in env file must be cast to boolean value like('%env(bool:CAS_FORCE_REDIRECT_HTTPS)%')!          
     xml_namespace: cas
     options: [] # you can add request options (or override global ones) (cf https://symfony.com/doc/current/http_client.html#making-requests)
 ```
