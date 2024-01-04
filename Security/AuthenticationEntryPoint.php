@@ -20,7 +20,7 @@ class AuthenticationEntryPoint implements AuthenticationEntryPointInterface
     {
         $this->server_login_url = $config['server_login_url'];
         $this->query_service_parameter = $config['query_service_parameter'];
-        $this->server_force_redirect_https = $config['server_force_redirect_https'];
+        $this->server_force_redirect_https = isset($config['server_force_redirect_https']) ?? false;
     }
 
     /**
