@@ -32,10 +32,9 @@ class CasAuthenticator extends AbstractAuthenticator
     protected $username_attribute;
     protected $query_ticket_parameter;
     protected $query_service_parameter;
+    protected $server_force_redirect_https;
     protected $options;
-
     private $eventDispatcher;
-
     private $client;
 
     /**
@@ -51,10 +50,9 @@ class CasAuthenticator extends AbstractAuthenticator
         $this->username_attribute = $config['username_attribute'];
         $this->query_service_parameter = $config['query_service_parameter'];
         $this->query_ticket_parameter = $config['query_ticket_parameter'];
+        $this->server_force_redirect_https = $config['server_force_redirect_https'];
         $this->options = $config['options'];
-
         $this->eventDispatcher = $eventDispatcher;
-
         $this->client = $client;
     }
 
@@ -163,6 +161,8 @@ class CasAuthenticator extends AbstractAuthenticator
         // Rebuild the URI from the parsed components.
         // Source: https://secure.php.net/manual/en/function.parse-url.php#106731
         $scheme   = isset($parsed_url['scheme']) ? $parsed_url['scheme'] . '://' : '';
+        if($this->server_force_redirect_https && $scheme === 'http://')
+            $scheme = 'https://';
         $host     = $parsed_url['host'] ?? '';
         $port     = isset($parsed_url['port']) ? ':' . $parsed_url['port'] : '';
         $user     = $parsed_url['user'] ?? '';
