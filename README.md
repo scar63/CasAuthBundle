@@ -1,7 +1,7 @@
 # CasAuthBundle
-Basic CAS (SSO) authenticator for Symfony 5.4 and 6.0 (no use guard component && no old authentication)
+Basic CAS (SSO) authenticator for Symfony 5.4, 6.0 and 7.0(no use guard component && no old authentication)
 
-This bundle provides a -very- basic CAS (https://github.com/apereo/cas/tree/4.1.x) authentication client for Symfony 5.4 and 6.0 with new security authentication system
+This bundle provides a -very- basic CAS (https://github.com/apereo/cas/tree/4.1.x) authentication client for Symfony 5.4, 6.0 and 7.0 with new security authentication system
 
 ## Installation
 
