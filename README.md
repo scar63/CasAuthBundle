@@ -33,7 +33,11 @@ y_raiso_cas_auth:
     xml_namespace: cas
     options: [] # you can add request options (or override global ones) (cf https://symfony.com/doc/current/http_client.html#making-requests)
 ```
-Note : the xml_namespace and options parameters are optionals
+Note : 
+- the xml_namespace and options parameters are optionals
+- to set proxy => 
+  options:
+    -proxy: '%env(CAS_PROXY_URL)%'
 
 Modify your security.yml with the following values (the provider in the following settings should not be used as it's just a very basic example ) :
 ```yaml
