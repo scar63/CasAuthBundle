@@ -28,7 +28,7 @@ class AuthenticationEntryPoint implements AuthenticationEntryPointInterface
      * @param AuthenticationException|null $authException
      * @return RedirectResponse
      */
-    public function start(Request $request, AuthenticationException $authException = null): RedirectResponse
+    public function start(Request $request, ?AuthenticationException $authException = null): RedirectResponse
     {
         $uri = $request->getUri();
         if($this->server_force_redirect_https && $request->getScheme() === 'http')
