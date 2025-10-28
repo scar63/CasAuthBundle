@@ -4,9 +4,15 @@ namespace YRaiso\CasAuthBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-class YRaisoCasAuthExtension extends Extension implements PrependExtensionInterface
+if (class_exists(\Symfony\Component\DependencyInjection\Extension\Extension::class)) {
+    class_alias(\Symfony\Component\DependencyInjection\Extension\Extension::class, __NAMESPACE__ . '\BaseExtension');
+} else {
+    class_alias(\Symfony\Component\HttpKernel\DependencyInjection\Extension::class, __NAMESPACE__ . '\BaseExtension');
+}
+
+
+class YRaisoCasAuthExtension extends BaseExtension implements PrependExtensionInterface
 {
 
     /**
