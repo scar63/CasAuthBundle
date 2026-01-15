@@ -20,7 +20,7 @@ class CasUserProvider implements UserProviderInterface, PasswordUpgraderInterfac
      *
      * @throws UserNotFoundException if the user is not found
      */
-    public function loadUserByIdentifier($identifier): UserInterface
+    public function loadUserByIdentifier($identifier): ?User
     {
         if(!empty($identifier)) {
             $user = new User();
@@ -35,7 +35,7 @@ class CasUserProvider implements UserProviderInterface, PasswordUpgraderInterfac
     /**
      * @deprecated since Symfony 5.3, loadUserByIdentifier() is used instead
      */
-    public function loadUserByUsername($username): UserInterface
+    public function loadUserByUsername($username): ?User
     {
         return $this->loadUserByIdentifier($username);
     }

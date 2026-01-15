@@ -65,7 +65,7 @@ class CasAuthenticator extends AbstractAuthenticator
      */
     public function supports(Request $request): ?bool
     {
-        return (bool) $request->get($this->query_ticket_parameter);
+        return $request->query->has($this->query_ticket_parameter);
     }
 
     /**
@@ -77,7 +77,7 @@ class CasAuthenticator extends AbstractAuthenticator
      * @throws TransportExceptionInterface
      * @throws Exception
      */
-    public function authenticate(Request $request): Passport
+    public function authenticate(Request $request): SelfValidatingPassport
     {
        $url = $this->server_validation_url.'?'.$this->query_ticket_parameter.'='.
             $request->get($this->query_ticket_parameter).'&'.
@@ -105,7 +105,7 @@ class CasAuthenticator extends AbstractAuthenticator
      * @param string $firewallName
      * @return Response|null
      */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?RedirectResponse
     {
         if ($request->query->has($this->query_ticket_parameter)) {
             return new RedirectResponse($this->removeCasTicket($request->getUri()));
@@ -126,7 +126,7 @@ class CasAuthenticator extends AbstractAuthenticator
             'message' => strtr($exception->getMessageKey(), $exception->getMessageData())
         ];
 
-        $def_response = new JsonResponse($data, 403);
+        $def_response = new JsonResponse($data, Response::HTTP_FORBIDDEN);
         $event = new CASAuthenticationFailureEvent($request,$exception, $def_response);
         $this->eventDispatcher->dispatch($event, CASAuthenticationFailureEvent::POST_MESSAGE);
 
@@ -179,7 +179,7 @@ class CasAuthenticator extends AbstractAuthenticator
      * @param string $firewallName
      * @return TokenInterface
      */
-    public function createToken(Passport $passport, string $firewallName): TokenInterface
+    public function createToken(Passport $passport, string $firewallName): PostAuthenticationToken
     {
         $passport->getUser()->setCasAttributes($passport->getAttributes());
         return new PostAuthenticationToken($passport->getUser(), $firewallName, $passport->getUser()->getRoles());
