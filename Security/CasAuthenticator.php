@@ -77,7 +77,7 @@ class CasAuthenticator extends AbstractAuthenticator
      * @throws TransportExceptionInterface
      * @throws Exception
      */
-    public function authenticate(Request $request): SelfValidatingPassport
+    public function authenticate(Request $request): Passport
     {
        $url = $this->server_validation_url.'?'.$this->query_ticket_parameter.'='.
             $request->get($this->query_ticket_parameter).'&'.
@@ -105,7 +105,7 @@ class CasAuthenticator extends AbstractAuthenticator
      * @param string $firewallName
      * @return Response|null
      */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?RedirectResponse
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         if ($request->query->has($this->query_ticket_parameter)) {
             return new RedirectResponse($this->removeCasTicket($request->getUri()));
@@ -179,7 +179,7 @@ class CasAuthenticator extends AbstractAuthenticator
      * @param string $firewallName
      * @return TokenInterface
      */
-    public function createToken(Passport $passport, string $firewallName): PostAuthenticationToken
+    public function createToken(Passport $passport, string $firewallName): TokenInterface
     {
         $passport->getUser()->setCasAttributes($passport->getAttributes());
         return new PostAuthenticationToken($passport->getUser(), $firewallName, $passport->getUser()->getRoles());
