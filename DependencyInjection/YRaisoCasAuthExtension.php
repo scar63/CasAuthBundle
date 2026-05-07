@@ -3,10 +3,11 @@
 namespace YRaiso\CasAuthBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 
-if (class_exists(\Symfony\Component\DependencyInjection\Extension\Extension::class)) {
-    class_alias(\Symfony\Component\DependencyInjection\Extension\Extension::class, __NAMESPACE__ . '\BaseExtension');
+if (class_exists(Extension::class)) {
+    class_alias(Extension::class, __NAMESPACE__ . '\BaseExtension');
 } else {
     class_alias(\Symfony\Component\HttpKernel\DependencyInjection\Extension::class, __NAMESPACE__ . '\BaseExtension');
 }
@@ -20,7 +21,7 @@ class YRaisoCasAuthExtension extends BaseExtension implements PrependExtensionIn
      * @param ContainerBuilder $container
      * @return void
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
@@ -41,7 +42,7 @@ class YRaisoCasAuthExtension extends BaseExtension implements PrependExtensionIn
      * @param ContainerBuilder $container
      * @return void
      */
-    public function prepend(ContainerBuilder $container)
+    public function prepend(ContainerBuilder $container): void
     {
         // TODO: Implement prepend() method.
     }
